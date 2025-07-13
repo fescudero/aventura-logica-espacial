@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aventura Lógica Espacial - ¡Desafía tu Mente!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .welcome-screen {
+            text-align: center;
+            padding: 60px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .rocket {
+            font-size: 4em;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-30px); }
+            60% { transform: translateY(-15px); }
+        }
+        
+        .title {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .brain {
+            font-size: 3em;
+            margin: 20px 0;
+        }
+        
+        .welcome-text {
+            font-size: 1.2em;
+            margin: 30px 0;
+            line-height: 1.6;
+        }
+        
+        .name-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 15px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            color: #333;
+            padding: 15px 30px;
+            font-size: 1.3em;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .personalized-screen {
+            text-align: center;
+            padding: 60px 40px;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+        
+        .quiz-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .quiz-title {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+        
+        .progress-info {
+            font-size: 1.1em;
+            margin-top: 10px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #2196F3);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+        
+        .question-card {
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .question-title {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .instruction {
+            font-size: 1.3em;
+            color: #555;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        
+        .pyramid {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 30px 0;
+        }
+        
+        .pyramid-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .pyramid-cell {
+            width: 60px;
+            height: 60px;
+            border: 3px solid #FF8C42;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            background: #FFF8E7;
+        }
+        
+        .pyramid-cell.filled {
+            background: #E8F5E8;
+            border-color: #4CAF50;
+            color: #2E7D32;
+        }
+        
+        .pyramid-input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .pyramid-input:focus {
+            outline: none;
+            background: #FFE0B2;
+        }
+        
+        .options {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .option {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            margin: 15px 0;
+            background: white;
+            border: 3px solid #E0E0E0;
+            border-radius: 15px;
+            font-size: 1.2em;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .option:hover {
+            border-color: #2196F3;
+            background: #E3F2FD;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .option.selected {
+            border-color: #4CAF50;
+            background: #E8F5E8;
+            color: #2E7D32;
+        }
+        
+        .image-container {
+            background: #F8F9FA;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            display: inline-block;
+        }
+        
+        .grid {
+            display: grid;
+            gap: 5px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-4 { grid-template-columns: repeat(4, 1fr); }
+        .grid-5 { grid-template-columns: repeat(5, 1fr); }
+        .grid-8 { grid-template-columns: repeat(8, 1fr); }
+        
+        .cell {
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+            font-size: 0.9em;
+            min-height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            padding: 30px 40px;
+            background: #F8F9FA;
+        }
+        
+        .nav-btn {
+            padding: 15px 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-btn.prev {
+            background: #6C757D;
+            color: white;
+        }
+        
+        .nav-btn.next {
+            background: #007BFF;
+            color: white;
+        }
+        
+        .nav-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .text-inputs {
+            background: #F8F9FA;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 1.2em;
+            line-height: 2;
+        }
+        
+        .text-input {
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid #2196F3;
+            padding: 5px 10px;
+            margin: 0 10px;
+            font-size: 1.1em;
+            text-align: center;
+            min-width: 120px;
+        }
+        
+        .text-input:focus {
+            outline: none;
+            border-bottom-color: #FF5722;
+            background: #FFF3E0;
+        }
+        
+        .checklist {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: left;
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border: 2px solid #E0E0E0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .checklist-item:hover {
+            border-color: #2196F3;
+            background: #E3F2FD;
+        }
+        
+        .checklist-item.checked {
+            border-color: #4CAF50;
+            background: #E8F5E8;
+        }
+        
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+        
+        .celebration {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #FFD700, #FF69B4, #9370DB);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .celebration::before {
+            content: "🎉🎊✨🏆⭐";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            font-size: 3em;
+            animation: float 3s infinite;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        
+        .celebration-title {
+            font-size: 3em;
+            margin: 20px 0;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .celebration-message {
+            font-size: 1.5em;
+            margin: 20px 0;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .title {
+                font-size: 1.8em;
+            }
+            
+            .name-input {
+                font-size: 1.1em;
+                padding: 12px;
+            }
+            
+            .pyramid-cell {
+                width: 45px;
+                height: 45px;
+                font-size: 1em;
+            }
+            
+            .option {
+                padding: 15px;
+                font-size: 1.1em;
+            }
+            
+            .quiz-header {
+                text-align: center;
+                padding: 15px;
+            }
+            
+            .quiz-title {
+                font-size: 1.4em;
+            }
+            
+            .navigation {
+                padding: 15px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .nav-btn {
+                width: 100%;
+                padding: 15px;
+                font-size: 1.1em;
+            }
+            
+            .question-card {
+                padding: 20px;
+            }
+            
+            .question-title {
+                font-size: 1.6em;
+            }
+            
+            .instruction {
+                font-size: 1.1em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .welcome-screen {
+                padding: 40px 20px;
+            }
+            
+            .title {
+                font-size: 1.6em;
+            }
+            
+            .brain, .rocket {
+                font-size: 2.5em;
+            }
+            
+            .welcome-text {
+                font-size: 1.1em;
+            }
+            
+            .btn {
+                font-size: 1.1em;
+                padding: 12px 25px;
+            }
+            
+            .pyramid-cell {
+                width: 40px;
+                height: 40px;
+                font-size: 0.9em;
+            }
+            
+            .pyramid-row {
+                gap: 8px;
+                margin-bottom: 8px;
+            }
+            
+            .options {
+                max-width: 100%;
+            }
+            
+            .option {
+                padding: 12px;
+                font-size: 1em;
+                margin: 10px 0;
+            }
+            
+            .image-container {
+                padding: 15px;
+                overflow-x: auto;
+            }
+            
+            .grid {
+                font-size: 0.8em;
+                gap: 3px;
+            }
+            
+            .cell {
+                padding: 8px 4px;
+                font-size: 0.7em;
+                min-height: 25px;
+            }
+            
+            .celebration-title {
+                font-size: 2.2em;
+            }
+            
+            .celebration-message {
+                font-size: 1.2em;
+            }
+            
+            .quiz-header {
+                padding: 10px;
+            }
+            
+            .quiz-title {
+                font-size: 1.2em;
+            }
+            
+            .progress-info {
+                font-size: 1em;
+            }
+            
+            .question-title {
+                font-size: 1.4em;
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .instruction {
+                font-size: 1em;
+                margin-bottom: 20px;
+            }
+        }
+        
+        /* Mejoras adicionales para accesibilidad táctil */
+        @media (pointer: coarse) {
+            .option {
+                min-height: 60px;
+                display: flex;
+                align-items: center;
+            }
+            
+            .btn {
+                min-height: 50px;
+                touch-action: manipulation;
+            }
+            
+            .nav-btn {
+                min-height: 50px;
+                touch-action: manipulation;
+            }
+            
+            .pyramid-input {
+                font-size: 1.1em;
+                touch-action: manipulation;
+            }
+            
+            .text-input {
+                min-height: 45px;
+                font-size: 1.1em;
+                touch-action: manipulation;
+            }
+            
+            .checklist-item {
+                min-height: 60px;
+                touch-action: manipulation;
+            }
+        }
+        
+        /* Orientación horizontal en móviles */
+        @media screen and (orientation: landscape) and (max-height: 500px) {
+            .welcome-screen, .personalized-screen {
+                padding: 20px;
+            }
+            
+            .rocket, .brain {
+                font-size: 2em;
+            }
+            
+            .title {
+                font-size: 1.8em;
+                margin: 10px 0;
+            }
+            
+            .welcome-text {
+                font-size: 1em;
+                margin: 15px 0;
+            }
+            
+            .celebration-title {
+                font-size: 2em;
+            }
+            
+            .quiz-header {
+                padding: 10px;
+            }
+            
+            .question-card {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- PANTALLA DE BIENVENIDA -->
+        <div id="welcome-screen" class="welcome-screen">
+            <div class="rocket">🚀</div>
+            <h1 class="title">AVENTURA LÓGICA ESPACIAL</h1>
+            <div class="brain">🧠</div>
+            <p class="welcome-text">
+                ¡Bienvenido/a, intrépido/a explorador/a!<br>
+                ¿Cuál es tu nombre para esta gran aventura?
+            </p>
+            <input type="text" id="player-name" class="name-input" placeholder="Escribe tu nombre aquí..." maxlength="50">
+            <br><br>
+            <button class="btn" id="start-btn" onclick="startAdventure()">¡INICIAR DESAFÍO! 🎯</button>
+        </div>
+
+        <!-- PANTALLA PERSONALIZADA -->
+        <div id="personalized-screen" class="personalized-screen hidden">
+            <div style="font-size: 4em;">🎯</div>
+            <h1 style="font-size: 2.5em; color: #2E7D32; margin: 20px 0;">¡PREPÁRATE, <span id="player-name-display"></span>!</h1>
+            <div style="font-size: 3em; margin: 20px 0;">⚡</div>
+            <p style="font-size: 1.3em; color: #1976D2; margin: 30px 0;">
+                ¡Prepárate para una aventura mental extraordinaria!
+            </p>
+            <button class="btn" onclick="startQuiz()" style="font-size: 1.2em; padding: 20px 40px;">
+                ¡COMENZAR AVENTURA! 🚀
+            </button>
+        </div>
+
+        <!-- PANTALLA DEL QUIZ -->
+        <div id="quiz-screen" class="hidden">
+            <div class="quiz-header">
+                <div>
+                    <div class="quiz-title">🧭 Aventura Lógica Espacial</div>
+                    <div class="progress-info">
+                        <span id="player-name-quiz"></span> - Pregunta <span id="current-q">1</span>/11
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 8.33%"></div>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <h2 class="question-title">
+                    <span>🧠</span>
+                    <span id="question-title">Pregunta</span>
+                </h2>
+                <div id="question-content">
+                    <!-- El contenido de la pregunta se genera dinámicamente -->
+                </div>
+            </div>
+
+            <div class="navigation">
+                <button class="nav-btn prev" id="prev-btn" onclick="previousQuestion()">← Anterior</button>
+                <button class="nav-btn next" id="next-btn" onclick="nextQuestion()">Siguiente →</button>
+            </div>
+        </div>
+
+        <!-- PANTALLA DE CELEBRACIÓN -->
+        <div id="celebration-screen" class="celebration hidden">
+            <div style="font-size: 5em; margin: 20px 0;">🎊</div>
+            <h1 class="celebration-title">¡EXPLOSIÓN DE ÉXITO!</h1>
+            <div style="font-size: 4em; margin: 20px 0;">🎉</div>
+            <h2 style="font-size: 2.5em; margin: 20px 0;">¡GUAU, <span id="winner-name"></span>!</h2>
+            <h3 style="font-size: 2em; margin: 20px 0;">¡LO LOGRASTE!</h3>
+            <div style="font-size: 4em; margin: 20px 0;">🏆</div>
+            <p class="celebration-message">
+                ¡ERES UN/A VERDADERO/A GENIO DE LA LÓGICA Y EL ESPACIO!
+            </p>
+            <p style="font-size: 1.2em; margin: 20px 0;">
+                Tu mente es BRILLANTE y has completado la 'Aventura Lógica Espacial' con un éxito ASOMBROSO!
+            </p>
+            <h4 style="font-size: 2em; margin: 30px 0;">¡FELICITACIONES, CAMPEÓN/A!</h4>
+            <div style="margin: 40px 0;">
+                <button class="btn" onclick="restartGame()" style="margin: 10px; font-size: 1.1em;">
+                    ¡JUGAR DE NUEVO! 🔄
+                </button>
+                <button class="btn" onclick="downloadCertificate()" style="margin: 10px; font-size: 1.1em;">
+                    DESCARGAR CERTIFICADO 📜
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let currentQuestion = 0;
+        let playerName = '';
+        let answers = {};
+        
+        // Datos de las preguntas
+        const questions = [
+            {
+                id: 1,
+                type: 'pyramid',
+                title: 'Pirámide del Tesoro Perdido',
+                instruction: 'Completa la pirámide de suma. Cada número es la suma de los dos números que están justo debajo.',
+                pyramid: [
+                    [null],
+                    [null, null],
+                    [8, null, 12],
+                    [3, 5, null, 4]
+                ],
+                correctAnswers: { '0-0': 46, '1-0': 21, '1-1': 25, '2-1': 13, '3-2': 8 }
+            },
+            {
+                id: 2,
+                type: 'pyramid',
+                title: 'Código Secreto Espacial',
+                instruction: 'Descifra el código secreto completando esta pirámide más compleja.',
+                pyramid: [
+                    [null],
+                    [null, null],
+                    [null, 15, null],
+                    [6, null, null, 11],
+                    [2, 4, null, null, 3]
+                ],
+                correctAnswers: { '0-0': 95, '1-0': 43, '1-1': 52, '2-0': 17, '2-2': 26, '3-1': 11, '3-2': 15, '4-2': 7, '4-3': 8 }
+            },
+            {
+                id: 3,
+                type: 'multiple',
+                title: 'Navegación Direccional',
+                instruction: 'Si estás mirando hacia el Norte y giras hacia la derecha, ¿hacia qué dirección miras ahora?',
+                options: ['Norte', 'Este', 'Sur', 'Oeste'],
+                correct: 1,
+                image: 'compass'
+            },
+            {
+                id: 4,
+                type: 'multiple',
+                title: 'Identificación de Perspectiva',
+                instruction: 'Si el robot mira hacia el Oeste, ¿qué objeto está al Norte del robot?',
+                options: ['Caja azul', 'Planta verde', 'Lámpara roja', 'Libro amarillo'],
+                correct: 1,
+                image: 'robot'
+            },
+            {
+                id: 5,
+                type: 'multiple',
+                title: 'Descripción Espacial del Laboratorio',
+                instruction: 'Observa la disposición del laboratorio. ¿Dónde está ubicado el microscopio?',
+                options: ['A la izquierda de la computadora', 'A la derecha de la computadora', 'Encima de la computadora', 'Debajo de la computadora'],
+                correct: 1,
+                image: 'lab'
+            },
+            {
+                id: 6,
+                type: 'multiple',
+                title: 'Navegación con Coordenadas',
+                instruction: 'Del punto A-2 al punto C-4, ¿cómo debe moverse el explorador?',
+                options: ['2 casillas Este, 2 casillas Norte', '2 casillas Oeste, 2 casillas Sur', '4 casillas Este, 2 casillas Norte', '2 casillas Sur, 4 casillas Este'],
+                correct: 0,
+                image: 'coordinates'
+            },
+            {
+                id: 7,
+                type: 'multiple',
+                title: 'Análisis de la Estantería',
+                instruction: 'En la estantería de 3 niveles, ¿qué libros están en el nivel del MEDIO?',
+                options: ['Rojo, Violeta, Gris, Café', 'Verde, Amarillo, Azul, Naranja', 'Rosa, Cyan, Índigo, Negro'],
+                correct: 1,
+                image: 'bookshelf'
+            },
+            {
+                id: 8,
+                type: 'multiple',
+                title: 'Distancias en el Espacio',
+                instruction: 'Observa la imagen. ¿Cuál objeto está MÁS CERCA de la Tierra?',
+                options: ['La Luna', 'El satélite artificial', 'El Sol', 'Las estrellas'],
+                correct: 1,
+                image: 'solar'
+            },
+            {
+                id: 9,
+                type: 'multiple',
+                title: 'Orientación del Cubo',
+                instruction: 'En el cubo que ves, ¿qué símbolo está en la esquina superior derecha?',
+                options: ['Estrella dorada ⭐', 'Círculo azul 🔵', 'Triángulo rojo 🔺', 'Cuadrado verde 🟢'],
+                correct: 1,
+                image: 'cube'
+            },
+            {
+                id: 10,
+                type: 'multiple',
+                title: 'Secuencia Lógica',
+                instruction: 'Siguiendo el patrón de rotación ▲ → ▶ → ▼ → ?, ¿qué figura sigue?',
+                options: ['Triángulo arriba ▲', 'Círculo ⭕', 'Cuadrado rotado ◆', 'Triángulo izquierda ◀'],
+                correct: 3,
+                image: 'sequence'
+            },
+            {
+                id: 11,
+                type: 'multiple',
+                title: 'Ubicación en la Ciudad',
+                instruction: 'Observa el mapa. ¿En qué esquina de la ciudad está ubicada la Escuela?',
+                options: ['Esquina superior izquierda', 'Esquina superior derecha', 'Esquina inferior izquierda', 'Esquina inferior derecha'],
+                correct: 0,
+                image: 'city'
+            }
+        ];
+
+        // Funciones principales
+        function startAdventure() {
+            const nameInput = document.getElementById('player-name');
+            playerName = nameInput.value.trim();
+            
+            if (!playerName) {
+                alert('Por favor, escribe tu nombre para comenzar la aventura');
+                nameInput.focus();
+                return;
+            }
+            
+            document.getElementById('player-name-display').textContent = playerName.toUpperCase();
+            showScreen('personalized-screen');
+        }
+
+        function startQuiz() {
+            document.getElementById('player-name-quiz').textContent = playerName;
+            showScreen('quiz-screen');
+            displayQuestion();
+        }
+
+        function showScreen(screenId) {
+            const screens = ['welcome-screen', 'personalized-screen', 'quiz-screen', 'celebration-screen'];
+            screens.forEach(screen => {
+                document.getElementById(screen).classList.add('hidden');
+            });
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+
+        function displayQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('question-title').textContent = question.title;
+            document.getElementById('current-q').textContent = currentQuestion + 1;
+            
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+            
+            const content = document.getElementById('question-content');
+            content.innerHTML = '';
+            
+            // Crear instrucción
+            const instruction = document.createElement('div');
+            instruction.className = 'instruction';
+            instruction.textContent = question.instruction;
+            content.appendChild(instruction);
+            
+            // Generar contenido según el tipo de pregunta
+            if (question.type === 'pyramid') {
+                content.appendChild(createPyramid(question));
+            } else if (question.type === 'multiple') {
+                if (question.image) {
+                    content.appendChild(createImage(question.image));
+                }
+                content.appendChild(createMultipleChoice(question));
+            }
+            
+            updateNavigation();
+        }
+
+        function createPyramid(question) {
+            const pyramidDiv = document.createElement('div');
+            pyramidDiv.className = 'pyramid';
+            
+            question.pyramid.forEach((row, rowIndex) => {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'pyramid-row';
+                
+                row.forEach((cell, cellIndex) => {
+                    const cellDiv = document.createElement('div');
+                    cellDiv.className = 'pyramid-cell';
+                    
+                    if (cell === null) {
+                        const input = document.createElement('input');
+                        input.type = 'number';
+                        input.className = 'pyramid-input';
+                        input.placeholder = '?';
+                        const key = `${rowIndex}-${cellIndex}`;
+                        input.value = answers[question.id] && answers[question.id][key] || '';
+                        input.oninput = (e) => updatePyramidAnswer(question.id, key, e.target.value);
+                        cellDiv.appendChild(input);
+                    } else {
+                        cellDiv.classList.add('filled');
+                        cellDiv.textContent = cell;
+                    }
+                    
+                    rowDiv.appendChild(cellDiv);
+                });
+                
+                pyramidDiv.appendChild(rowDiv);
+            });
+            
+            return pyramidDiv;
+        }
+
+        function createMultipleChoice(question) {
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options';
+            
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.innerHTML = `<strong>${String.fromCharCode(65 + index)})</strong> ${option}`;
+                
+                if (answers[question.id] === index) {
+                    optionDiv.classList.add('selected');
+                }
+                
+                optionDiv.onclick = () => {
+                    // Quitar selección anterior
+                    optionsDiv.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+                    // Agregar nueva selección
+                    optionDiv.classList.add('selected');
+                    // Guardar respuesta
+                    answers[question.id] = index;
+                    checkCompletion();
+                };
+                
+                optionsDiv.appendChild(optionDiv);
+            });
+            
+            return optionsDiv;
+        }
+
+        function createTextInputs(question) {
+            const inputsDiv = document.createElement('div');
+            inputsDiv.className = 'text-inputs';
+            
+            const parts = question.template.split('__');
+            let html = '';
+            
+            parts.forEach((part, index) => {
+                html += part;
+                if (index < question.inputCount) {
+                    const currentValue = answers[question.id] && answers[question.id][index] || '';
+                    html += `<input type="text" class="text-input" placeholder="..." value="${currentValue}" oninput="updateTextAnswer(${question.id}, ${index}, this.value)">`;
+                }
+            });
+            
+            inputsDiv.innerHTML = html;
+            return inputsDiv;
+        }
+
+        function createChecklist(question) {
+            const checklistDiv = document.createElement('div');
+            checklistDiv.className = 'checklist';
+            
+            question.steps.forEach((step, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'checklist-item';
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'checkbox';
+                checkbox.checked = answers[question.id] && answers[question.id].includes(index);
+                
+                const label = document.createElement('span');
+                label.innerHTML = `<strong>${index + 1}.</strong> ${step}`;
+                
+                itemDiv.appendChild(checkbox);
+                itemDiv.appendChild(label);
+                
+                if (checkbox.checked) {
+                    itemDiv.classList.add('checked');
+                }
+                
+                itemDiv.onclick = () => {
+                    checkbox.checked = !checkbox.checked;
+                    updateChecklistAnswer(question.id, index, checkbox.checked);
+                    itemDiv.classList.toggle('checked', checkbox.checked);
+                };
+                
+                checklistDiv.appendChild(itemDiv);
+            });
+            
+            return checklistDiv;
+        }
+
+        function createImage(imageType) {
+            const imageDiv = document.createElement('div');
+            imageDiv.className = 'image-container';
+            
+            if (imageType === 'robot') {
+                imageDiv.innerHTML = `
+                    <div style="text-align: center; margin-bottom: 10px;">
+                        <div style="display: inline-block; padding: 8px 15px; background: #E3F2FD; border-radius: 8px; font-weight: bold;">N ↑</div>
+                    </div>
+                    <div class="grid grid-3" style="max-width: 300px; margin: 0 auto;">
+                        <div class="cell" style="background: #C8E6C9;">🌿 Planta</div>
+                        <div class="cell" style="background: #BBDEFB;">📦 Caja</div>
+                        <div class="cell" style="background: #FFCDD2;">💡 Lámpara</div>
+                        <div class="cell" style="background: #FFF9C4;">📚 Libro</div>
+                        <div class="cell" style="background: #F5F5F5; border: 3px solid #F44336; font-weight: bold;">🤖 Robot → O</div>
+                        <div class="cell" style="background: #E1BEE7;">🔧 Herramienta</div>
+                    </div>
+                `;
+            } else if (imageType === 'coordinates') {
+                imageDiv.innerHTML = `
+                    <div class="grid grid-4" style="max-width: 250px; margin: 0 auto; font-size: 0.9em;">
+                        <div class="cell"></div><div class="cell" style="font-weight: bold;">A</div><div class="cell" style="font-weight: bold;">B</div><div class="cell" style="font-weight: bold;">C</div>
+                        <div class="cell" style="font-weight: bold;">1</div><div class="cell" style="background: #F5F5F5;">□</div><div class="cell" style="background: #F5F5F5;">□</div><div class="cell" style="background: #F5F5F5;">□</div>
+                        <div class="cell" style="font-weight: bold;">2</div><div class="cell" style="background: #FFEB3B; border-radius: 5px;">🚶</div><div class="cell" style="background: #F5F5F5;">□</div><div class="cell" style="background: #F5F5F5;">□</div>
+                        <div class="cell" style="font-weight: bold;">3</div><div class="cell" style="background: #F5F5F5;">□</div><div class="cell" style="background: #F5F5F5;">□</div><div class="cell" style="background: #F5F5F5;">□</div>
+                        <div class="cell" style="font-weight: bold;">4</div><div class="cell" style="background: #F5F5F5;">□</div><div class="cell" style="background: #F5F5F5;">□</div><div class="cell" style="background: #FF5722; color: white; border-radius: 5px;">💰</div>
+                    </div>
+                `;
+            } else if (imageType === 'bookshelf') {
+                imageDiv.innerHTML = `
+                    <div class="grid grid-4" style="max-width: 350px; margin: 0 auto; font-size: 0.8em;">
+                        <div class="cell" style="background: #F44336; color: white;">ROJO</div>
+                        <div class="cell" style="background: #9C27B0; color: white;">VIOLETA</div>
+                        <div class="cell" style="background: #9E9E9E; color: white;">GRIS</div>
+                        <div class="cell" style="background: #795548; color: white;">CAFÉ</div>
+                        <div class="cell" style="background: #4CAF50; color: white;">VERDE</div>
+                        <div class="cell" style="background: #FFEB3B; color: black;">AMARILLO</div>
+                        <div class="cell" style="background: #2196F3; color: white;">AZUL</div>
+                        <div class="cell" style="background: #FF9800; color: white;">NARANJA</div>
+                        <div class="cell" style="background: #E91E63; color: white;">ROSA</div>
+                        <div class="cell" style="background: #00BCD4; color: white;">CYAN</div>
+                        <div class="cell" style="background: #3F51B5; color: white;">ÍNDIGO</div>
+                        <div class="cell" style="background: #212121; color: white;">NEGRO</div>
+                    </div>
+                `;
+            } else if (imageType === 'compass') {
+                imageDiv.innerHTML = `
+                    <div style="position: relative; width: 150px; height: 150px; margin: 0 auto; border: 4px solid #2196F3; border-radius: 50%; background: #E3F2FD;">
+                        <div style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); font-weight: bold; color: #F44336; font-size: 1.2em;">N</div>
+                        <div style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-weight: bold; color: #333; font-size: 1.1em;">E</div>
+                        <div style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); font-weight: bold; color: #333; font-size: 1.1em;">S</div>
+                        <div style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-weight: bold; color: #333; font-size: 1.1em;">O</div>
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 2em; color: #F44336;">→</div>
+                        <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); font-size: 0.9em; color: #666; text-align: center;">
+                            Mirando al Norte<br>Gira hacia la derecha
+                        </div>
+                    </div>
+                `;
+            } else if (imageType === 'lab') {
+                imageDiv.innerHTML = `
+                    <div style="font-size: 2.5em; text-align: center; line-height: 1.5;">
+                        💻&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;🔬<br><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;🔭
+                    </div>
+                    <div style="font-size: 0.9em; margin-top: 15px; color: #666;">
+                        Computadora - Microscopio - Telescopio
+                    </div>
+                `;
+            } else if (imageType === 'solar') {
+                imageDiv.innerHTML = `
+                    <div style="font-size: 2.5em; text-align: center; line-height: 1.5;">
+                        🛰️ &nbsp; 🌍 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🌙
+                    </div>
+                    <div style="font-size: 0.9em; margin-top: 15px; color: #666; text-align: center;">
+                        Satélite artificial - Tierra - Luna natural
+                    </div>
+                `;
+            } else if (imageType === 'cube') {
+                imageDiv.innerHTML = `
+                    <div style="position: relative; width: 200px; height: 200px; margin: 0 auto; border: 4px solid #2196F3; background: #E3F2FD; border-radius: 10px;">
+                        <div style="position: absolute; top: 15px; left: 15px; font-size: 1.8em;">⭐</div>
+                        <div style="position: absolute; top: 15px; right: 15px; font-size: 1.8em;">🔵</div>
+                        <div style="position: absolute; bottom: 15px; left: 15px; font-size: 1.8em;">🔺</div>
+                        <div style="position: absolute; bottom: 15px; right: 15px; font-size: 1.8em;">🟢</div>
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 0.9em; font-weight: bold; text-align: center;">
+                            Vista desde<br>ARRIBA
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 10px; font-size: 0.9em; color: #666;">
+                        ¿Qué símbolo está en la esquina superior derecha?
+                    </div>
+                `;
+            } else if (imageType === 'sequence') {
+                imageDiv.innerHTML = `
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 20px; font-size: 2.5em;">
+                        <div>▲</div>
+                        <div style="font-size: 0.6em;">→</div>
+                        <div>▶</div>
+                        <div style="font-size: 0.6em;">→</div>
+                        <div>▼</div>
+                        <div style="font-size: 0.6em;">→</div>
+                        <div style="border: 3px dashed #FF9800; padding: 10px; border-radius: 8px;">?</div>
+                    </div>
+                `;
+            } else if (imageType === 'city') {
+                imageDiv.innerHTML = `
+                    <div class="grid grid-5" style="max-width: 350px; margin: 0 auto; font-size: 0.75em;">
+                        <div class="cell" style="background: #4CAF50; color: white;">🏫 Escuela</div>
+                        <div class="cell" style="background: #E0E0E0;"></div>
+                        <div class="cell" style="background: #E0E0E0;"></div>
+                        <div class="cell" style="background: #E0E0E0;"></div>
+                        <div class="cell" style="background: #F44336; color: white;">🏢 Torre</div>
+                        <div class="cell" style="background: #E0E0E0;"></div>
+                        <div class="cell" style="background: #E0E0E0;"></div>
+                        <div class="cell" style="background: #E0E0E0;"></div>
+                        <div class="cell" style="background: #E0E0E0;"></div>
+                        <div class="cell" style="background: #E0E0E0;"></div>
+                        <div class="cell" style="background: #E0E0E0;"></div>
+                        <div class="cell" style="background: #E0E0E0;"></div>
+                        <div class="cell" style="background: #4CAF50; color: white;">🏞️ Parque</div>
+                        <div class="cell" style="background: #E0E0E0;"></div>
+                        <div class="cell" style="background: #E0E0E0;"></div>
+                        <div class="cell" style="background: #E0E0E0;"></div>
+                        <div class="cell" style="background: #E0E0E0;"></div>
+                        <div class="cell" style="background: #E0E0E0;"></div>
+                        <div class="cell" style="background: #E0E0E0;"></div>
+                        <div class="cell" style="background: #E0E0E0;"></div>
+                        <div class="cell" style="background: #2196F3; color: white;">📚 Biblioteca</div>
+                        <div class="cell" style="background: #FF9800; color: white;">🏬 Centro</div>
+                        <div class="cell" style="background: #E0E0E0;"></div>
+                        <div class="cell" style="background: #FF5722; color: white;">🏥 Hospital</div>
+                        <div class="cell" style="background: #E0E0E0;"></div>
+                    </div>
+                `;
+            } else if (imageType === 'final') {
+                imageDiv.innerHTML = `
+                    <div style="text-align: center; margin-bottom: 10px;">
+                        <div style="display: inline-block; padding: 8px 15px; background: #E0E0E0; border-radius: 8px; font-weight: bold;">N ↑</div>
+                    </div>
+                    <div class="grid grid-5" style="max-width: 250px; margin: 0 auto; font-size: 0.8em;">
+                        <div class="cell" style="background: #F5F5F5; border: 1px solid #E0E0E0;"></div>
+                        <div class="cell" style="background: #F5F5F5; border: 1px solid #E0E0E0;"></div>
+                        <div class="cell" style="background: #F5F5F5; border: 1px solid #E0E0E0;"></div>
+                        <div class="cell" style="background: #F5F5F5; border: 1px solid #E0E0E0;"></div>
+                        <div class="cell" style="background: #F5F5F5; border: 1px solid #E0E0E0;"></div>
+                        <div class="cell" style="background: #4CAF50; color: white; border: 1px solid #E0E0E0;">🚶 INICIO</div>
+                        <div class="cell" style="background: #FFEB3B; border: 1px solid #E0E0E0;">→</div>
+                        <div class="cell" style="background: #FFEB3B; border: 1px solid #E0E0E0;">→</div>
+                        <div class="cell" style="background: #FFEB3B; border: 1px solid #E0E0E0;">→</div>
+                        <div class="cell" style="background: #F5F5F5; border: 1px solid #E0E0E0;"></div>
+                        <div class="cell" style="background: #F5F5F5; border: 1px solid #E0E0E0;"></div>
+                        <div class="cell" style="background: #F5F5F5; border: 1px solid #E0E0E0;"></div>
+                        <div class="cell" style="background: #F5F5F5; border: 1px solid #E0E0E0;"></div>
+                        <div class="cell" style="background: #E91E63; color: white; border: 1px solid #E0E0E0;">↓</div>
+                        <div class="cell" style="background: #F5F5F5; border: 1px solid #E0E0E0;"></div>
+                        <div class="cell" style="background: #F5F5F5; border: 1px solid #E0E0E0;"></div>
+                        <div class="cell" style="background: #F5F5F5; border: 1px solid #E0E0E0;"></div>
+                        <div class="cell" style="background: #F5F5F5; border: 1px solid #E0E0E0;"></div>
+                        <div class="cell" style="background: #FF5722; color: white; border: 1px solid #E0E0E0;">📍 FINAL</div>
+                        <div class="cell" style="background: #F5F5F5; border: 1px solid #E0E0E0;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; margin-top: 10px; color: #666; text-align: center;">
+                        3 pasos Este (amarillo) + 2 pasos Sur (rosa)
+                    </div>
+                `;
+            }
+            
+            return imageDiv;
+        }
+
+        function createMazeImage() {
+            const mazeDiv = document.createElement('div');
+            mazeDiv.className = 'image-container';
+            mazeDiv.innerHTML = `
+                <div style="text-align: center; margin-bottom: 10px;">
+                    <div style="display: inline-block; padding: 8px 15px; background: #E3F2FD; border-radius: 8px; font-weight: bold;">Brújula de Direcciones</div>
+                </div>
+                <div style="text-align: center; font-size: 1.2em; margin: 20px 0;">
+                    🧭 Norte ↑ | Este → | Sur ↓ | Oeste ←
+                </div>
+            `;
+            return mazeDiv;
+        }
+
+        // Funciones de actualización de respuestas
+        function updatePyramidAnswer(questionId, key, value) {
+            if (!answers[questionId]) answers[questionId] = {};
+            answers[questionId][key] = parseInt(value) || 0;
+            checkCompletion();
+        }
+
+        function updateTextAnswer(questionId, index, value) {
+            if (!answers[questionId]) answers[questionId] = [];
+            answers[questionId][index] = value;
+            checkCompletion();
+        }
+
+        function updateChecklistAnswer(questionId, index, checked) {
+            if (!answers[questionId]) answers[questionId] = [];
+            
+            if (checked) {
+                if (!answers[questionId].includes(index)) {
+                    answers[questionId].push(index);
+                }
+            } else {
+                answers[questionId] = answers[questionId].filter(i => i !== index);
+            }
+            
+            checkCompletion();
+        }
+
+        // Navegación
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                displayQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                displayQuestion();
+            }
+        }
+
+        function updateNavigation() {
+            document.getElementById('prev-btn').disabled = currentQuestion === 0;
+            document.getElementById('next-btn').disabled = currentQuestion === questions.length - 1;
+        }
+
+        // Verificación de completado
+        function checkCompletion() {
+            const allCorrect = questions.every(q => {
+                const answer = answers[q.id];
+                if (!answer) return false;
+                
+                if (q.type === 'multiple') {
+                    return answer === q.correct;
+                } else if (q.type === 'pyramid') {
+                    return answer && typeof answer === 'object' && Object.keys(answer).length >= 3;
+                }
+                return false;
+            });
+            
+            if (allCorrect && Object.keys(answers).length === questions.length) {
+                setTimeout(showCelebration, 1000);
+            }
+        }
+
+        function showCelebration() {
+            document.getElementById('winner-name').textContent = playerName.toUpperCase();
+            showScreen('celebration-screen');
+        }
+
+        function restartGame() {
+            currentQuestion = 0;
+            playerName = '';
+            answers = {};
+            document.getElementById('player-name').value = '';
+            showScreen('welcome-screen');
+        }
+
+        function downloadCertificate() {
+            alert(`¡Certificado de ${playerName} descargado exitosamente! 📜\n\nFelicitaciones por completar la Aventura Lógica Espacial.`);
+        }
+
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', function() {
+            // Permitir Enter en el campo de nombre
+            document.getElementById('player-name').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    startAdventure();
+                }
+            });
+            
+            // Validar botón de inicio
+            document.getElementById('player-name').addEventListener('input', function() {
+                const btn = document.getElementById('start-btn');
+                btn.disabled = !this.value.trim();
+            });
+        });
+    </script>
+</body>
+</html>
