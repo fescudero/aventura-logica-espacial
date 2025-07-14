@@ -204,6 +204,13 @@
             font-size: 1.2em;
             font-weight: bold;
             color: #333;
+            -moz-appearance: textfield; /* Firefox */
+        }
+        
+        .pyramid-input::-webkit-outer-spin-button,
+        .pyramid-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
         
         .pyramid-input:focus {
@@ -373,7 +380,150 @@
             cursor: pointer;
         }
         
-        .celebration {
+        .results-summary {
+            padding: 40px;
+            background: white;
+            margin: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .score-display {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .score-circle {
+            display: inline-block;
+            width: 200px;
+            height: 200px;
+            border: 8px solid #E0E0E0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            margin-bottom: 20px;
+        }
+        
+        .score-number {
+            text-align: center;
+        }
+        
+        .score-number span {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #2E4B8B;
+            display: block;
+        }
+        
+        .score-percentage {
+            font-size: 1.5em;
+            color: #666;
+            margin-top: 10px;
+        }
+        
+        .results-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .result-item {
+            background: white;
+            margin: 15px 0;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 6px solid #E0E0E0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .result-item.correct {
+            border-left-color: #4CAF50;
+            background: #F1F8E9;
+        }
+        
+        .result-item.incorrect {
+            border-left-color: #F44336;
+            background: #FFEBEE;
+        }
+        
+        .result-question {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .result-answer {
+            font-size: 1em;
+            line-height: 1.5;
+        }
+        
+        .result-item.correct .result-answer {
+            color: #2E7D32;
+        }
+        
+        .stats-summary {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            min-width: 120px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .stat-item.correct {
+            background: #E8F5E8;
+            border: 2px solid #4CAF50;
+        }
+        
+        .stat-item.incorrect {
+            background: #FFEBEE;
+            border: 2px solid #F44336;
+        }
+        
+        .stat-item.unanswered {
+            background: #F5F5F5;
+            border: 2px solid #9E9E9E;
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-item.correct .stat-number {
+            color: #2E7D32;
+        }
+        
+        .stat-item.incorrect .stat-number {
+            color: #D32F2F;
+        }
+        
+        .stat-item.unanswered .stat-number {
+            color: #616161;
+        }
+        
+        .stat-label {
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+        
+        .result-item.unanswered {
+            border-left-color: #9E9E9E;
+            background: #FAFAFA;
+        }
+        
+        .result-item.unanswered .result-answer {
+            color: #616161;
+        }
             text-align: center;
             padding: 40px;
             background: linear-gradient(135deg, #FFD700, #FF69B4, #9370DB);
@@ -423,6 +573,37 @@
             .container {
                 margin: 10px;
                 border-radius: 15px;
+            @media (max-width: 480px) {
+                .score-circle {
+                    width: 150px;
+                    height: 150px;
+                }
+                
+                .score-number span {
+                    font-size: 2em;
+                }
+                
+                .score-percentage {
+                    font-size: 1.2em;
+                }
+                
+                .results-summary {
+                    padding: 20px;
+                    margin: 10px;
+                }
+                
+                .result-item {
+                    padding: 15px;
+                    margin: 10px 0;
+                }
+                
+                .result-question {
+                    font-size: 1em;
+                }
+                
+                .result-answer {
+                    font-size: 0.9em;
+                }
             }
             
             .title {
@@ -698,11 +879,67 @@
 
             <div class="navigation">
                 <button class="nav-btn prev" id="prev-btn" onclick="previousQuestion()">← Anterior</button>
+                <button class="nav-btn results" id="results-btn" onclick="showFinalResults()" style="background: #4CAF50; display: none;">Ver Resultados 📊</button>
                 <button class="nav-btn next" id="next-btn" onclick="nextQuestion()">Siguiente →</button>
             </div>
         </div>
 
-        <!-- PANTALLA DE CELEBRACIÓN -->
+        <!-- PANTALLA DE RESULTADOS -->
+        <div id="results-screen" class="hidden">
+            <div class="quiz-header">
+                <div>
+                    <div class="quiz-title">📊 Resultados de tu Aventura</div>
+                    <div class="progress-info">
+                        <span id="player-name-results"></span> - Puntuación Final
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-summary">
+                <h2 style="text-align: center; color: #2E4B8B; margin-bottom: 30px;">
+                    ¡Has completado la Aventura Lógica Espacial!
+                </h2>
+                
+                <div class="score-display">
+                    <div class="score-circle">
+                        <div class="score-number">
+                            <span id="final-score">0/11</span>
+                            <div class="score-percentage" id="final-percentage">0%</div>
+                        </div>
+                    </div>
+                    <h3 id="final-message" style="text-align: center; margin: 20px 0; font-size: 2em;">¡BUEN TRABAJO!</h3>
+                </div>
+
+                <div class="stats-summary">
+                    <div class="stat-item correct">
+                        <div class="stat-number" id="correct-count">0</div>
+                        <div class="stat-label">✅ Correctas</div>
+                    </div>
+                    <div class="stat-item incorrect">
+                        <div class="stat-number" id="incorrect-count">0</div>
+                        <div class="stat-label">❌ Incorrectas</div>
+                    </div>
+                    <div class="stat-item unanswered">
+                        <div class="stat-number" id="unanswered-count">0</div>
+                        <div class="stat-label">⚪ Sin responder</div>
+                    </div>
+                </div>
+
+                <div class="results-container">
+                    <h3 style="color: #2E4B8B; margin-bottom: 20px; text-align: center;">📝 Revisión de Respuestas:</h3>
+                    <div id="results-list"></div>
+                </div>
+
+                <div style="text-align: center; margin: 40px 0;">
+                    <button class="btn" onclick="goToCelebration()" style="margin: 10px; font-size: 1.2em;">
+                        ¡VER CELEBRACIÓN! 🎉
+                    </button>
+                    <button class="btn" onclick="restartGame()" style="margin: 10px; font-size: 1.1em;">
+                        JUGAR DE NUEVO 🔄
+                    </button>
+                </div>
+            </div>
+        </div>
         <div id="celebration-screen" class="celebration hidden">
             <div style="font-size: 5em; margin: 20px 0;">🎊</div>
             <h1 class="celebration-title">¡EXPLOSIÓN DE ÉXITO!</h1>
@@ -753,7 +990,7 @@
                 id: 2,
                 type: 'pyramid',
                 title: 'Código Secreto Espacial',
-                instruction: 'Descifra el código secreto completando esta pirámide más compleja.',
+                instruction: 'Descifra el código secreto completando esta pirámide. Recuerda: cada número es la suma de los dos números que están justo debajo.',
                 pyramid: [
                     [null],
                     [null, null],
@@ -868,7 +1105,7 @@
         }
 
         function showScreen(screenId) {
-            const screens = ['welcome-screen', 'personalized-screen', 'quiz-screen', 'celebration-screen'];
+            const screens = ['welcome-screen', 'personalized-screen', 'quiz-screen', 'results-screen', 'celebration-screen'];
             screens.forEach(screen => {
                 document.getElementById(screen).classList.add('hidden');
             });
@@ -1209,8 +1446,12 @@
 
         // Funciones de actualización de respuestas
         function updatePyramidAnswer(questionId, key, value) {
+            // Solo permitir números enteros
+            const intValue = parseInt(value);
+            if (isNaN(intValue) && value !== '') return;
+            
             if (!answers[questionId]) answers[questionId] = {};
-            answers[questionId][key] = parseInt(value) || 0;
+            answers[questionId][key] = intValue || 0;
             checkCompletion();
         }
 
@@ -1252,25 +1493,175 @@
         function updateNavigation() {
             document.getElementById('prev-btn').disabled = currentQuestion === 0;
             document.getElementById('next-btn').disabled = currentQuestion === questions.length - 1;
+            
+            // Mostrar botón "Ver Resultados" en la última pregunta
+            const resultsBtn = document.getElementById('results-btn');
+            if (currentQuestion === questions.length - 1) {
+                resultsBtn.style.display = 'block';
+            } else {
+                resultsBtn.style.display = 'none';
+            }
         }
 
         // Verificación de completado
         function checkCompletion() {
-            const allCorrect = questions.every(q => {
-                const answer = answers[q.id];
-                if (!answer) return false;
+            // Verificar si todas las preguntas han sido respondidas
+            const allAnswered = questions.every(q => answers[q.id] !== undefined);
+            
+            if (allAnswered) {
+                setTimeout(showResults, 1000);
+            }
+        }
+
+        // Verificación de completado
+        function checkCompletion() {
+            // Solo verificar si están en la última pregunta y hay respuestas
+            if (currentQuestion === questions.length - 1 && Object.keys(answers).length > 0) {
+                // No mostrar resultados automáticamente, esperar a que el usuario haga clic
+                return;
+            }
+        }
+
+        function showFinalResults() {
+            // Calcular resultados detallados
+            let correctAnswers = 0;
+            let incorrectAnswers = 0;
+            let unansweredQuestions = 0;
+            let totalAnswers = questions.length;
+            
+            const results = questions.map(q => {
+                const userAnswer = answers[q.id];
+                let status = 'unanswered';
+                let isCorrect = false;
                 
-                if (q.type === 'multiple') {
-                    return answer === q.correct;
-                } else if (q.type === 'pyramid') {
-                    return answer && typeof answer === 'object' && Object.keys(answer).length >= 3;
+                if (userAnswer !== undefined) {
+                    isCorrect = checkAnswerCorrectness(q, userAnswer);
+                    status = isCorrect ? 'correct' : 'incorrect';
+                    if (isCorrect) {
+                        correctAnswers++;
+                    } else {
+                        incorrectAnswers++;
+                    }
+                } else {
+                    unansweredQuestions++;
                 }
-                return false;
+                
+                return {
+                    question: q,
+                    userAnswer: userAnswer,
+                    status: status,
+                    isCorrect: isCorrect,
+                    correctAnswer: q.correct !== undefined ? q.correct : 'Completar correctamente'
+                };
             });
             
-            if (allCorrect && Object.keys(answers).length === questions.length) {
-                setTimeout(showCelebration, 1000);
+            // Mostrar pantalla de resultados detallados
+            showDetailedResultsScreen(results, correctAnswers, incorrectAnswers, unansweredQuestions, totalAnswers);
+        }
+
+        function checkAnswerCorrectness(question, answer) {
+            if (question.type === 'multiple') {
+                return answer === question.correct;
+            } else if (question.type === 'pyramid') {
+                if (!answer || typeof answer !== 'object') return false;
+                // Para pirámides, verificar que las respuestas coincidan con las correctas
+                const correctAnswers = question.correctAnswers;
+                let correctCount = 0;
+                let totalRequired = Object.keys(correctAnswers).length;
+                
+                for (let key in correctAnswers) {
+                    if (answer[key] === correctAnswers[key]) {
+                        correctCount++;
+                    }
+                }
+                
+                // Considerar correcto si al menos el 70% de las respuestas son correctas
+                return correctCount >= Math.ceil(totalRequired * 0.7);
             }
+            return false;
+        }
+
+        function showDetailedResultsScreen(results, correctAnswers, incorrectAnswers, unansweredQuestions, totalAnswers) {
+            const percentage = Math.round((correctAnswers / totalAnswers) * 100);
+            let message = '';
+            let messageColor = '';
+            
+            if (percentage >= 80) {
+                message = '¡EXCELENTE TRABAJO!';
+                messageColor = '#4CAF50';
+            } else if (percentage >= 60) {
+                message = '¡BUEN TRABAJO!';
+                messageColor = '#FF9800';
+            } else {
+                message = '¡SIGUE PRACTICANDO!';
+                messageColor = '#F44336';
+            }
+            
+            document.getElementById('winner-name').textContent = playerName.toUpperCase();
+            document.getElementById('final-score').textContent = `${correctAnswers}/${totalAnswers}`;
+            document.getElementById('final-percentage').textContent = `${percentage}%`;
+            document.getElementById('final-message').textContent = message;
+            document.getElementById('final-message').style.color = messageColor;
+            
+            // Mostrar estadísticas detalladas
+            document.getElementById('correct-count').textContent = correctAnswers;
+            document.getElementById('incorrect-count').textContent = incorrectAnswers;
+            document.getElementById('unanswered-count').textContent = unansweredQuestions;
+            
+            // Generar lista de resultados detallada
+            const resultsList = document.getElementById('results-list');
+            resultsList.innerHTML = '';
+            
+            results.forEach((result, index) => {
+                const resultItem = document.createElement('div');
+                resultItem.className = `result-item ${result.status}`;
+                
+                let answerText = '';
+                let statusIcon = '';
+                
+                if (result.status === 'correct') {
+                    statusIcon = '✅';
+                    if (result.question.type === 'multiple') {
+                        const userOption = result.question.options[result.userAnswer];
+                        answerText = `Tu respuesta: ${userOption}`;
+                    } else if (result.question.type === 'pyramid') {
+                        answerText = 'Pirámide completada correctamente';
+                    }
+                } else if (result.status === 'incorrect') {
+                    statusIcon = '❌';
+                    if (result.question.type === 'multiple') {
+                        const userOption = result.question.options[result.userAnswer];
+                        const correctOption = result.question.options[result.question.correct];
+                        answerText = `Tu respuesta: ${userOption}<br>✅ Respuesta correcta: ${correctOption}`;
+                    } else if (result.question.type === 'pyramid') {
+                        answerText = 'Pirámide incompleta o incorrecta<br>✅ Revisa que cada número sea la suma de los dos de abajo';
+                    }
+                } else {
+                    statusIcon = '⚪';
+                    if (result.question.type === 'multiple') {
+                        const correctOption = result.question.options[result.question.correct];
+                        answerText = `Sin responder<br>✅ Respuesta correcta: ${correctOption}`;
+                    } else if (result.question.type === 'pyramid') {
+                        answerText = 'Sin responder<br>✅ Completa la pirámide con la suma de los números';
+                    }
+                }
+                
+                resultItem.innerHTML = `
+                    <div class="result-question">
+                        ${statusIcon} <strong>Pregunta ${index + 1}:</strong> ${result.question.title}
+                    </div>
+                    <div class="result-answer">${answerText}</div>
+                `;
+                
+                resultsList.appendChild(resultItem);
+            });
+            
+            showScreen('results-screen');
+        }
+
+        function goToCelebration() {
+            document.getElementById('winner-name').textContent = playerName.toUpperCase();
+            showScreen('celebration-screen');
         }
 
         function showCelebration() {
